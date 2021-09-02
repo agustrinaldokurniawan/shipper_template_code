@@ -10,7 +10,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 const locationRoute = require("./routes/location");
+const pricingRoute = require("./routes/pricing");
+const orderRoute = require("./routes/order");
+const pickupRoute = require("./routes/pickup");
+
 app.use("/location", locationRoute);
+app.use("/pricing", pricingRoute);
+app.use("/order", orderRoute);
+app.use("/pickup", pickupRoute);
 
 const server = () =>
   app.listen(4000, () => {

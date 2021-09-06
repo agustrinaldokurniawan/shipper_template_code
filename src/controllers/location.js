@@ -1,6 +1,6 @@
 const axios = require("axios").default;
 const baseURL = "https://merchant-api-sandbox.shipper.id";
-const ShipperKey = "";
+const ShipperKey = "EpHZs1U77o0p7dXPX0DKO34MYEYodcD5BPaDxyk51PNhk0vCLx2sjXzCDtfDoPNp";
 
 const {
   locationKeyword,
@@ -24,30 +24,28 @@ class LocationController {
         };
       }
 
-      //   const url = `${baseURL}/v3/location?adm_level=${
-      //     adm_level || 3
-      //   }&keyword=${keyword}`;
+        const url = `${baseURL}/v3/location?keyword=${keyword}`;
 
-      //   const locationResponse = await axios
-      //     .get(url, {
-      //       headers: {
-      //         Accept: "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting location",
-      //       };
-      //     });
+        const locationResponse = await axios
+          .get(url, {
+            headers: {
+              Accept: "application/json",
+               "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+            return response.data
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting location",
+            };
+          });
 
       // This is dummy response object
-      const locationResponse = await location;
+      // const locationResponse = await location;
 
       return res.json(locationResponse);
     } catch (error) {
@@ -63,29 +61,29 @@ class LocationController {
       // limit =	integer =	Limit data for each page, integer example:30 (default: 30)
       // page = integer =	Page Number integer example: 1 (default: 1)
 
-      //   const url = `${baseURL}/v3/location/countries?country_id=${
-      //     country_id}&limit=${limit}&page={page}`;
+        const url = `${baseURL}/v3/location/countries?country_id=${
+          country_id}&limit=${limit}&page=${page}`;
 
-      //   const locationResponse = await axios
-      //     .get(url, {
-      //       headers: {
-      //         Accept: "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting location",
-      //       };
-      //     });
+        const locationResponse = await axios
+          .get(url, {
+            headers: {
+              Accept: "application/json",
+              "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+            return response.data;
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting location",
+            };
+          });
 
       // This is dummy response object
-      const locationResponse = await locationCountry;
+      // const locationResponse = await locationCountry;
 
       return res.json(locationResponse);
     } catch (error) {
@@ -112,28 +110,28 @@ class LocationController {
 
       //   province_id	integer	Shipper’s Province ID integer example: 6 (default: show all)
 
-      //   const url = `${baseURL}/v3/location/country/${country_id}/provinces?limit=${limit}&page=${page}`;
+        const url = `${baseURL}/v3/location/country/${country_id}/provinces?limit=${limit}&page=${page}`;
 
-      //   const locationResponse = await axios
-      //     .get(url, {
-      //       headers: {
-      //         Accept: "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting location",
-      //       };
-      //     });
+        const locationResponse = await axios
+          .get(url, {
+            headers: {
+              Accept: "application/json",
+              "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+            return response.data;
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting location",
+            };
+          });
 
       // This is dummy response object
-      const locationResponse = await locationProvince;
+      // const locationResponse = await locationProvince;
 
       return res.json(locationResponse);
     } catch (error) {
@@ -158,28 +156,28 @@ class LocationController {
       //   limit	integer	Limit data for each page, integer example: 30 (default: 30)
       //   page	integer	Page Number integer example: 1 (default: 1)
 
-      //   const url = `${baseURL}/v3/location/province/${province_id}/cities?limit=${limit}&page={page}`;
+        const url = `${baseURL}/v3/location/province/${province_id}/cities?limit=${limit}&page=${page}`;
 
-      //   const locationResponse = await axios
-      //     .get(url, {
-      //       headers: {
-      //         Accept: "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting location",
-      //       };
-      //     });
+        const locationResponse = await axios
+          .get(url, {
+            headers: {
+              Accept: "application/json",
+              "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+            return response.data;
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting location",
+            };
+          });
 
       // This is dummy response object
-      const locationResponse = await locationCity;
+      // const locationResponse = await locationCity;
 
       return res.json(locationResponse);
     } catch (error) {
@@ -202,28 +200,28 @@ class LocationController {
       //   limit	integer	Limit data for each page, integer example: 30 (default: 30)
       //   page	integer	Page Number integer example: 1 (default: 1)
 
-      //   const url = `${baseURL}/v3/location/city/${city_id}/suburbs?limit=${limit}&page={page}`;
+        const url = `${baseURL}/v3/location/city/${city_id}/suburbs?limit=${limit}&page=${page}`;
 
-      //   const locationResponse = await axios
-      //     .get(url, {
-      //       headers: {
-      //         Accept: "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting location",
-      //       };
-      //     });
+        const locationResponse = await axios
+          .get(url, {
+            headers: {
+              Accept: "application/json",
+              "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+            return response.data;
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting location",
+            };
+          });
 
       // This is dummy response object
-      const locationResponse = await locationSuburbs;
+      // const locationResponse = await locationSuburbs;
 
       return res.json(locationResponse);
     } catch (error) {

@@ -1,6 +1,6 @@
 const axios = require("axios").default;
 const baseURL = "https://merchant-api-sandbox.shipper.id";
-const ShipperKey = "";
+const ShipperKey = "EpHZs1U77o0p7dXPX0DKO34MYEYodcD5BPaDxyk51PNhk0vCLx2sjXzCDtfDoPNp";
 
 const { domestic, domesticRateType } = require("../dummy/pricing");
 
@@ -42,7 +42,7 @@ class PricingController {
         throw { message: "Item Value or Item Price is required" };
       }
 
-      //   const url = `${baseURL}/v3/pricing/domestic`;
+      const url = `${baseURL}/v3/pricing/domestic`;
 
       const pricingPayload = {
         origin,
@@ -57,28 +57,28 @@ class PricingController {
         sort_by,
       };
 
-      //   const locationResponse = await axios
-      //     .post(url,
-      //      {...pricingPayload},
-      //      {
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting pricing",
-      //       };
-      //     });
+        const pricingResponse = await axios
+          .post(url,
+           {...pricingPayload},
+           {
+            headers: {
+              "Content-Type": "application/json",
+              "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+            return response.data;
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting pricing",
+            };
+          });
 
       // This is dummy response object
-      const pricingResponse = await domestic;
+      // const pricingResponse = await domestic;
 
       return res.json(pricingResponse);
     } catch (error) {
@@ -127,7 +127,7 @@ class PricingController {
       if (!item_value) {
         throw { message: "Item Value or Item Price is required" };
       }
-      //   const url = `${baseURL}/v3/pricing/domestic/${rateType}`;
+      const url = `${baseURL}/v3/pricing/domestic/${rateType}`;
 
       const pricingPayload = {
         origin,
@@ -142,29 +142,29 @@ class PricingController {
         sort_by,
       };
 
-      //   const locationResponse = await axios
-      //     .post(url,
-      //      {...pricingPayload},
-      //      {
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting pricing",
-      //       };
-      //     });
+        const pricingResponse = await axios
+          .post(url,
+           {...pricingPayload},
+           {
+            headers: {
+              "Content-Type": "application/json",
+              "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+            return response.data;
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting pricing",
+            };
+          });
 
       // This is dummy response object
 
-      const pricingResponse = await domesticRateType;
+      // const pricingResponse = await domesticRateType;
 
       return res.json(pricingResponse);
     } catch (error) {

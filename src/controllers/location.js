@@ -20,8 +20,6 @@ class LocationController {
       //adm_level (optional) is integer = Location Administrative Level [1=country, 2=province, 3=city, 4=suburb, 5=area] integer example: 1 (default: show all)
       //keyword (required) string >= 3 characters = Input Location Keyword [Min: 3 character] example: jakarta
 
-      if (adm_level && Number(adm_level) > 5 && Number(adm_level) < 1)
-        throw { message: "Adm Level should be between 1 and 3" };
       if (!keyword) {
         throw {
           message: "Keyword is required",

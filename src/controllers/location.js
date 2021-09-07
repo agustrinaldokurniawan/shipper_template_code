@@ -228,6 +228,37 @@ class LocationController {
       return res.status(500).json(error);
     }
   }
+
+  static async createUserAddres(req, res) {
+    try {
+      const { owner } = req.user.id;
+
+      if (!req.body) {
+        throw {
+          message: "Content can't be empty"
+        }
+      };
+
+      const createAddress = await UserAddress.create({
+        owner,
+        ...req.body
+      });
+
+      const result = await UserAddress.findById(createUserAddres.id)
+        .populate("owner");
+
+      const resPayload = {
+        statusCode: 200,
+        statusText: "success",
+        message: "User address is created",
+        data: result
+      };
+
+      res.json(resPayload).status(200);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
 }
 
 module.exports = LocationController;

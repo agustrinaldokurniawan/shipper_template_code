@@ -1,6 +1,6 @@
 const axios = require("axios").default;
 const baseURL = "https://merchant-api-sandbox.shipper.id";
-const ShipperKey = "";
+const ShipperKey = process.env.SHIPPER_KEY;
 
 const {
   locationKeyword,
@@ -15,39 +15,124 @@ class LocationController {
     try {
       const { adm_level, keyword } = await req.query;
 
+      //keyword = menteng atas
+
       //adm_level (optional) is integer = Location Administrative Level [1=country, 2=province, 3=city, 4=suburb, 5=area] integer example: 1 (default: show all)
       //keyword (required) string >= 3 characters = Input Location Keyword [Min: 3 character] example: jakarta
 
+      if (adm_level && Number(adm_level) > 5 && Number(adm_level) < 1)
+        throw { message: "Adm Level should be between 1 and 3" };
       if (!keyword) {
         throw {
-          message: "Invalid Keyword",
+          message: "Keyword is required",
         };
       }
 
-      //   const url = `${baseURL}/v3/location?adm_level=${
-      //     adm_level || 3
-      //   }&keyword=${keyword}`;
+      if (keyword.length < 3)
+        throw { message: "Keyword must be 3 or more characters" };
 
-      //   const locationResponse = await axios
-      //     .get(url, {
-      //       headers: {
-      //         Accept: "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting location",
-      //       };
-      //     });
+      const url = `${baseURL}/v3/location?adm_level=${
+        adm_level || 5
+      }&keyword=${keyword}`;
+
+      const locationResponse = await axios
+        .get(url, {
+          headers: {
+            Accept: "application/json",
+            "X-API-KEY": ShipperKey,
+          },
+        })
+        .then((response) => {
+          //   {
+          //     "metadata": {
+          //         "path": "/v3/location?adm_level=5&keyword=menteng+atas",
+          //         "http_status_code": 200,
+          //         "http_status": "OK",
+          //         "timestamp": 1630914657
+          //     },
+          //     "data": [
+          //         {
+          //             "adm_level_1": {
+          //                 "id": 228,
+          //                 "level": 1,
+          //                 "type": "country",
+          //                 "name": "INDONESIA",
+          //                 "code": "ID"
+          //             },
+          //             "adm_level_2": {
+          //                 "id": 6,
+          //                 "level": 2,
+          //                 "type": "province",
+          //                 "name": "DKI Jakarta"
+          //             },
+          //             "adm_level_3": {
+          //                 "id": 41,
+          //                 "level": 3,
+          //                 "type": "city",
+          //                 "name": "Jakarta Selatan",
+          //                 "geo_coord": {
+          //                     "lat": -6.2614927,
+          //                     "lng": 106.8105998
+          //                 }
+          //             },
+          //             "adm_level_4": {
+          //                 "id": 482,
+          //                 "level": 4,
+          //                 "type": "suburb",
+          //                 "name": "Setia Budi",
+          //                 "geo_coord": {
+          //                     "lat": -6.2195686,
+          //                     "lng": 106.8325872
+          //                 }
+          //             },
+          //             "adm_level_5": {
+          //                 "id": 4710,
+          //                 "level": 5,
+          //                 "type": "area",
+          //                 "name": "Menteng Atas",
+          //                 "geo_coord": {
+          //                     "lat": -6.2180511,
+          //                     "lng": 106.8399623
+          //                 },
+          //                 "postcode": "12960"
+          //             },
+          //             "adm_level_cur": {
+          //                 "id": 4710,
+          //                 "level": 5,
+          //                 "type": "area",
+          //                 "name": "Menteng Atas",
+          //                 "geo_coord": {
+          //                     "lat": -6.2180511,
+          //                     "lng": 106.8399623
+          //                 },
+          //                 "postcode": "12960"
+          //             },
+          //             "display_txt": "12960, Menteng Atas, Setia Budi, Jakarta Selatan, DKI Jakarta, INDONESIA",
+          //             "postcodes": [
+          //                 "12960"
+          //             ]
+          //         }
+          //     ],
+          //     "pagination": {
+          //         "current_page": 1,
+          //         "current_elements": 1,
+          //         "total_pages": 1,
+          //         "total_elements": 1
+          //     }
+          // }
+
+          return response.data;
+        })
+        .catch((error) => {
+          console.log({ error });
+          throw {
+            error: error,
+            message: "Error while getting location",
+          };
+        });
 
       // This is dummy response object
-      const locationResponse = await location;
+      // const locationResponse = await location;
 
       return res.json(locationResponse);
     } catch (error) {

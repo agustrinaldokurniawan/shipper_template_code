@@ -1,6 +1,6 @@
 const axios = require("axios").default;
 const baseURL = "https://merchant-api-sandbox.shipper.id";
-const ShipperKey = "EpHZs1U77o0p7dXPX0DKO34MYEYodcD5BPaDxyk51PNhk0vCLx2sjXzCDtfDoPNp";
+const ShipperKey = "";
 
 const { domestic, domesticRateType } = require("../dummy/pricing");
 
@@ -18,6 +18,7 @@ class PricingController {
         limit,
         page,
         sort_by,
+        discount
       } = await req.body;
 
       let for_order = true;
@@ -55,6 +56,7 @@ class PricingController {
         limit,
         page,
         sort_by,
+        discount
       };
 
         const pricingResponse = await axios

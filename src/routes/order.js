@@ -4,7 +4,8 @@ const route = express.Router();
 
 route
   .post("/create", OrderController.create)
-  .get("/:order_id", OrderController.getById)
+  .get("/getById/:order_id", OrderController.getById)
+  .get("/available", OrderController.getAvaliableOrder)
   .delete("/cancel", OrderController.cancelOrder);
 
 module.exports = route;

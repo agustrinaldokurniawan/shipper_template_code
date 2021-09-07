@@ -15,32 +15,25 @@ class LocationController {
     try {
       const { adm_level, keyword } = await req.query;
 
-      //keyword = menteng atas
-
       //adm_level (optional) is integer = Location Administrative Level [1=country, 2=province, 3=city, 4=suburb, 5=area] integer example: 1 (default: show all)
       //keyword (required) string >= 3 characters = Input Location Keyword [Min: 3 character] example: jakarta
 
       if (!keyword) {
         throw {
-          message: "Keyword is required",
+          message: "Invalid Keyword",
         };
       }
 
-      if (keyword.length < 3)
-        throw { message: "Keyword must be 3 or more characters" };
+        const url = `${baseURL}/v3/location?keyword=${keyword}`;
 
-      const url = `${baseURL}/v3/location?adm_level=${
-        adm_level || 5
-      }&keyword=${keyword}`;
-
-      const locationResponse = await axios
-        .get(url, {
-          headers: {
-            Accept: "application/json",
-            "X-API-KEY": ShipperKey,
-          },
-        })
-        .then((response) => {
+        const locationResponse = await axios
+          .get(url, {
+            headers: {
+              Accept: "application/json",
+               "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
           //   {
           //     "metadata": {
           //         "path": "/v3/location?adm_level=5&keyword=menteng+atas",
@@ -119,15 +112,16 @@ class LocationController {
           //     }
           // }
 
-          return response.data;
-        })
-        .catch((error) => {
-          console.log({ error });
-          throw {
-            error: error,
-            message: "Error while getting location",
-          };
-        });
+
+            return response.data
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting location",
+            };
+          });
 
       // This is dummy response object
       // const locationResponse = await location;
@@ -146,29 +140,52 @@ class LocationController {
       // limit =	integer =	Limit data for each page, integer example:30 (default: 30)
       // page = integer =	Page Number integer example: 1 (default: 1)
 
-      //   const url = `${baseURL}/v3/location/countries?country_id=${
-      //     country_id}&limit=${limit}&page={page}`;
+        const url = `${baseURL}/v3/location/countries?country_id=${
+          country_id}&limit=${limit}&page=${page}`;
 
-      //   const locationResponse = await axios
-      //     .get(url, {
-      //       headers: {
-      //         Accept: "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting location",
-      //       };
-      //     });
+        const locationResponse = await axios
+          .get(url, {
+            headers: {
+              Accept: "application/json",
+              "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+          //   {
+          //     "metadata": {
+          //         "path": "/v3/location/countries?country_id=228&limit=5&page=1",
+          //         "http_status_code": 200,
+          //         "http_status": "OK",
+          //         "timestamp": 1631002129
+          //     },
+          //     "data": [
+          //         {
+          //             "id": 228,
+          //             "name": "INDONESIA",
+          //             "code": "ID"
+          //         }
+          //     ],
+          //     "pagination": {
+          //         "current_page": 1,
+          //         "current_elements": 1,
+          //         "total_pages": 1,
+          //         "total_elements": 1
+          //     }
+          // }
+
+
+            return response.data;
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting location",
+            };
+          });
 
       // This is dummy response object
-      const locationResponse = await locationCountry;
+      // const locationResponse = await locationCountry;
 
       return res.json(locationResponse);
     } catch (error) {
@@ -195,28 +212,68 @@ class LocationController {
 
       //   province_id	integer	Shipper’s Province ID integer example: 6 (default: show all)
 
-      //   const url = `${baseURL}/v3/location/country/${country_id}/provinces?limit=${limit}&page=${page}`;
+        const url = `${baseURL}/v3/location/country/${country_id}/provinces?limit=${limit}&page=${page}`;
 
-      //   const locationResponse = await axios
-      //     .get(url, {
-      //       headers: {
-      //         Accept: "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting location",
-      //       };
-      //     });
+        const locationResponse = await axios
+          .get(url, {
+            headers: {
+              Accept: "application/json",
+              "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+          //   {
+          //     "metadata": {
+          //         "path": "/v3/location/country/228/provinces?%3Acountry_id=228&limit=2&page=1",
+          //         "http_status_code": 200,
+          //         "http_status": "OK",
+          //         "timestamp": 1631002180
+          //     },
+          //     "data": [
+          //         {
+          //             "id": 1,
+          //             "name": "Bali",
+          //             "lat": -8.4095178,
+          //             "lng": 115.188916,
+          //             "country": {
+          //                 "id": 228,
+          //                 "name": "INDONESIA",
+          //                 "code": "ID"
+          //             }
+          //         },
+          //         {
+          //             "id": 2,
+          //             "name": "Bangka Belitung",
+          //             "lat": -2.7410513,
+          //             "lng": 106.4405872,
+          //             "country": {
+          //                 "id": 228,
+          //                 "name": "INDONESIA",
+          //                 "code": "ID"
+          //             }
+          //         }
+          //     ],
+          //     "pagination": {
+          //         "current_page": 1,
+          //         "current_elements": 2,
+          //         "total_pages": 17,
+          //         "total_elements": 34
+          //     }
+          // }
+
+
+            return response.data;
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting location",
+            };
+          });
 
       // This is dummy response object
-      const locationResponse = await locationProvince;
+      // const locationResponse = await locationProvince;
 
       return res.json(locationResponse);
     } catch (error) {
@@ -241,28 +298,80 @@ class LocationController {
       //   limit	integer	Limit data for each page, integer example: 30 (default: 30)
       //   page	integer	Page Number integer example: 1 (default: 1)
 
-      //   const url = `${baseURL}/v3/location/province/${province_id}/cities?limit=${limit}&page={page}`;
+        const url = `${baseURL}/v3/location/province/${province_id}/cities?limit=${limit}&page=${page}`;
 
-      //   const locationResponse = await axios
-      //     .get(url, {
-      //       headers: {
-      //         Accept: "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting location",
-      //       };
-      //     });
+        const locationResponse = await axios
+          .get(url, {
+            headers: {
+              Accept: "application/json",
+              "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+          //   {
+          //     "metadata": {
+          //         "path": "/v3/location/province/6/cities?%3Aprovince_id=6&limit=2&page=1",
+          //         "http_status_code": 200,
+          //         "http_status": "OK",
+          //         "timestamp": 1631002221
+          //     },
+          //     "data": [
+          //         {
+          //             "province": {
+          //                 "id": 6,
+          //                 "name": "DKI Jakarta",
+          //                 "lat": -6.1744651,
+          //                 "lng": 106.822745
+          //             },
+          //             "country": {
+          //                 "id": 228,
+          //                 "name": "INDONESIA",
+          //                 "code": "ID"
+          //             },
+          //             "id": 38,
+          //             "name": "Kepulauan Seribu",
+          //             "lat": -5.7985265,
+          //             "lng": 106.5071981
+          //         },
+          //         {
+          //             "province": {
+          //                 "id": 6,
+          //                 "name": "DKI Jakarta",
+          //                 "lat": -6.1744651,
+          //                 "lng": 106.822745
+          //             },
+          //             "country": {
+          //                 "id": 228,
+          //                 "name": "INDONESIA",
+          //                 "code": "ID"
+          //             },
+          //             "id": 39,
+          //             "name": "Jakarta Utara",
+          //             "lat": -6.1384145,
+          //             "lng": 106.863956
+          //         }
+          //     ],
+          //     "pagination": {
+          //         "current_page": 1,
+          //         "current_elements": 2,
+          //         "total_pages": 3,
+          //         "total_elements": 6
+          //     }
+          // }
+
+
+            return response.data;
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting location",
+            };
+          });
 
       // This is dummy response object
-      const locationResponse = await locationCity;
+      // const locationResponse = await locationCity;
 
       return res.json(locationResponse);
     } catch (error) {
@@ -285,61 +394,94 @@ class LocationController {
       //   limit	integer	Limit data for each page, integer example: 30 (default: 30)
       //   page	integer	Page Number integer example: 1 (default: 1)
 
-      //   const url = `${baseURL}/v3/location/city/${city_id}/suburbs?limit=${limit}&page={page}`;
+        const url = `${baseURL}/v3/location/city/${city_id}/suburbs?limit=${limit}&page=${page}`;
 
-      //   const locationResponse = await axios
-      //     .get(url, {
-      //       headers: {
-      //         Accept: "application/json",
-      //          Authorization: ShipperKey
-      //       },
-      //     })
-      //     .then((response) => {
-      //       return response;
-      //     })
-      //     .catch((error) => {
-      //       console.log({ error });
-      //       throw {
-      //         error: error,
-      //         message: "Error while getting location",
-      //       };
-      //     });
+        const locationResponse = await axios
+          .get(url, {
+            headers: {
+              Accept: "application/json",
+              "X-API-KEY": ShipperKey
+            },
+          })
+          .then((response) => {
+          //   {
+          //     "metadata": {
+          //         "path": "/v3/location/city/6/suburbs?%3Acity_id=6&limit=2&page=1",
+          //         "http_status_code": 200,
+          //         "http_status": "OK",
+          //         "timestamp": 1631002297
+          //     },
+          //     "data": [
+          //         {
+          //             "id": 37,
+          //             "name": "Tembuku",
+          //             "lat": -8.4058202,
+          //             "lng": 115.3904215,
+          //             "city": {
+          //                 "id": 6,
+          //                 "name": "Bangli",
+          //                 "lat": -8.2975884,
+          //                 "lng": 115.3548713
+          //             },
+          //             "province": {
+          //                 "id": 1,
+          //                 "name": "Bali",
+          //                 "lat": -8.4095178,
+          //                 "lng": 115.188916
+          //             },
+          //             "country": {
+          //                 "id": 228,
+          //                 "name": "INDONESIA",
+          //                 "code": "ID"
+          //             }
+          //         },
+          //         {
+          //             "id": 38,
+          //             "name": "Susut",
+          //             "lat": -8.4145123,
+          //             "lng": 115.3370947,
+          //             "city": {
+          //                 "id": 6,
+          //                 "name": "Bangli",
+          //                 "lat": -8.2975884,
+          //                 "lng": 115.3548713
+          //             },
+          //             "province": {
+          //                 "id": 1,
+          //                 "name": "Bali",
+          //                 "lat": -8.4095178,
+          //                 "lng": 115.188916
+          //             },
+          //             "country": {
+          //                 "id": 228,
+          //                 "name": "INDONESIA",
+          //                 "code": "ID"
+          //             }
+          //         }
+          //     ],
+          //     "pagination": {
+          //         "current_page": 1,
+          //         "current_elements": 2,
+          //         "total_pages": 2,
+          //         "total_elements": 4
+          //     }
+          // }
+
+
+            return response.data;
+          })
+          .catch((error) => {
+            console.log({ error });
+            throw {
+              error: error,
+              message: "Error while getting location",
+            };
+          });
 
       // This is dummy response object
-      const locationResponse = await locationSuburbs;
+      // const locationResponse = await locationSuburbs;
 
       return res.json(locationResponse);
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  }
-
-  static async createUserAddres(req, res) {
-    try {
-      const { owner } = req.user.id;
-
-      if (!req.body) {
-        throw {
-          message: "Content can't be empty"
-        }
-      };
-
-      const createAddress = await UserAddress.create({
-        owner,
-        ...req.body
-      });
-
-      const result = await UserAddress.findById(createUserAddres.id)
-        .populate("owner");
-
-      const resPayload = {
-        statusCode: 200,
-        statusText: "success",
-        message: "User address is created",
-        data: result
-      };
-
-      res.json(resPayload).status(200);
     } catch (error) {
       return res.status(500).json(error);
     }

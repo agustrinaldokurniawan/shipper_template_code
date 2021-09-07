@@ -6,6 +6,7 @@ route
   .post("/create", OrderController.create)
   .get("/getById/:order_id", OrderController.getById)
   .get("/available", OrderController.getAvaliableOrder)
-  .delete("/cancel", OrderController.cancelOrder);
+  .delete("/cancel", OrderController.cancelOrder)
+  .post("/webhookShipper", OrderController.webhookShipper);
 
 module.exports = route;

@@ -589,6 +589,134 @@ class OrderController {
       return res.status(500).json(error);
     }
   }
+
+  static async webhookShipper(req, res) {
+    try {
+      const { body } = req;
+      console.log({ body });
+      //dijemput
+      // {
+      //   auth: 'ad97928e842f176ab5e87935c6ccff7e',
+      //   order_id: '61372e46f668083030bdc088',
+      //   tracking_id: '2197WKG8ZWKQK',
+      //   order_tracking_id: '61372eb8d3d1ea2b319dd00d',
+      //   external_id: 'KRN123112312113',
+      //   status_date: '2021-09-07T09:19:52+00:00',
+      //   internal: {
+      //     id: 3,
+      //     name: 'Dijemput Driver',
+      //     description: 'Paket Anda sudah dijemput oleh Shipperu Duraivu'
+      //   },
+      //   external: {
+      //     id: 99,
+      //     name: 'Dijemput Driver',
+      //     description: 'Paket Anda sudah dijemput oleh Shipperu Duraivu'
+      //   },
+      //   internal_status: { code: 1030, name: 'Aktif', description: 'Aktif' },
+      //   external_status: {
+      //     code: 1030,
+      //     name: 'Proses Penjemputan',
+      //     description: 'Paket dalam proses penjemputan oleh driver [driver_name]'
+      //   },
+      //   awb: ''
+      // }
+
+      //Dijemput - Sorting Center
+      // {
+      //   auth: 'ad97928e842f176ab5e87935c6ccff7e',
+      //   order_id: '61372e46f668083030bdc088',
+      //   tracking_id: '2197WKG8ZWKQK',
+      //   order_tracking_id: '61372ee2d3d1ea3f279dd00e',
+      //   external_id: 'KRN123112312113',
+      //   status_date: '2021-09-07T09:20:34+00:00',
+      //   internal: {
+      //     id: 4,
+      //     name: 'Sampai di Gudang',
+      //     description: 'Paket Anda sudah tiba di gudang'
+      //   },
+      //   external: {
+      //     id: 99,
+      //     name: 'Sampai di Gudang',
+      //     description: 'Paket Anda sudah tiba di gudang'
+      //   },
+      //   internal_status: {
+      //     code: 1070,
+      //     name: 'Order Check In oleh HUB',
+      //     description: 'Order Check In oleh HUB'
+      //   },
+      //   external_status: {
+      //     code: 1060,
+      //     name: 'Sortir Barang',
+      //     description: 'Paket Menuju Gudang Sorting [warehouse_location]'
+      //   },
+      //   awb: ''
+      // }
+
+      //dikirim ke partnerships {
+      //   auth: 'ad97928e842f176ab5e87935c6ccff7e',
+      //   order_id: '61372e46f668083030bdc088',
+      //   tracking_id: '2197WKG8ZWKQK',
+      //   order_tracking_id: '61372f01d3d1eaebad9dd00f',
+      //   external_id: 'KRN123112312113',
+      //   status_date: '2021-09-07T09:21:05+00:00',
+      //   internal: {
+      //     id: 5,
+      //     name: 'Dikirim ke Partner',
+      //     description: 'Paket Anda sudah dalam perjalanan ke JNE'
+      //   },
+      //   external: {
+      //     id: 99,
+      //     name: 'Dikirim ke Partner',
+      //     description: 'Paket Anda sudah dalam perjalanan ke JNE'
+      //   },
+      //   internal_status: {
+      //     code: 1140,
+      //     name: 'Order Check Out oleh Sorting HUB',
+      //     description: 'Order Check Out oleh Sorting HUB'
+      //   },
+      //   external_status: {
+      //     code: 1070,
+      //     name: 'Dikirim ke [3pl_name]',
+      //     description: 'Paket Dikirim ke [3pl_name]'
+      //   },
+      //   awb: ''
+      // }
+
+      //berhasil
+      // {
+      //   auth: 'ad97928e842f176ab5e87935c6ccff7e',
+      //   order_id: '61372e46f668083030bdc088',
+      //   tracking_id: '2197WKG8ZWKQK',
+      //   order_tracking_id: '61372f6ad3d1ea35769dd010',
+      //   external_id: 'KRN123112312113',
+      //   status_date: '2021-09-07T09:22:50+00:00',
+      //   internal: {
+      //     id: 9,
+      //     name: 'Berhasil Dikirim',
+      //     description: 'Paket Anda sudah diterima - [receiver_name]'
+      //   },
+      //   external: {
+      //     id: 8,
+      //     name: 'DELIVERED TO receiver_name',
+      //     description: 'DELIVERED TO [receiver_name | 17-07-2020 11:05 | DESTINATION_LOCATION ]'
+      //   },
+      //   internal_status: {
+      //     code: 2000,
+      //     name: 'Order Terkirim - [receiver_name]',
+      //     description: 'Order Terkirim - [receiver_name]'
+      //   },
+      //   external_status: {
+      //     code: 1090,
+      //     name: 'Paket Terkirim',
+      //     description: 'Paket terkirim dan diterima oleh [receiver_name]'
+      //   },
+      //   awb: ''
+      // }
+      return res.json(body);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
 }
 
 module.exports = OrderController;

@@ -560,20 +560,32 @@ class OrderController {
 
       const url = await `${baseURL}/v3/order/${order_id}`;
 
-      const orderResponse = await axios
-        .delete(
-          url,
-          { reason: reason },
-          {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-API-Key": ShipperKey,
-            },
-          }
-        )
+      const orderResponse = await axios({
+        method: "DELETE",
+        url,
+        data: { reason },
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-Key": ShipperKey,
+        },
+      })
         .then((response) => {
-          return response;
+          //   {
+          //     "metadata": {
+          //         "path": "/v3/order/219Z7YDYJ7RDP?%3Aorder_id=219Z7YDYJ7RDP&",
+          //         "http_status_code": 200,
+          //         "http_status": "OK",
+          //         "timestamp": 1631010743
+          //     },
+          //     "data": {
+          //         "cancel_order": {
+          //             "order_id": "219Z7YDYJ7RDP",
+          //             "cancel": true
+          //         }
+          //     }
+          // }
+
+          return response.data;
         })
         .catch((error) => {
           console.log({ error });

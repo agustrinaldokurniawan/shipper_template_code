@@ -2,10 +2,12 @@ const axios = require("axios").default;
 const baseURL = "https://merchant-api-sandbox.shipper.id";
 const ShipperKey = process.env.SHIPPER_KEY;
 
+const MerchantShipment = require("../models/merchantShipment");
+
 class LogisticControllers {
   static async getLogistics(req, res) {
     try {
-      const url = `https://merchant-api-sandbox.shipper.id/v3/logistic`;
+      const url = `${baseURL}/v3/logistic`;
 
       const logisticResponse = await axios
         .get(url, {
@@ -989,6 +991,311 @@ class LogisticControllers {
         });
 
       return res.json(logisticResponse);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+  static async getActiveLogisticMerchant(req, res) {
+    try {
+      const { ownerId } = req.params;
+
+      //ownerId = 6138f0839da119f74b3d6834
+
+      const merchantActiveLogistic = await MerchantShipment.find({
+        owner: ownerId,
+        isAvailable: true,
+      });
+
+      const url = `${baseURL}/v3/logistic`;
+
+      const logisticResponse = await axios
+        .get(url, {
+          headers: {
+            Accept: "application/json",
+            "X-API-KEY": ShipperKey,
+          },
+        })
+        .then((response) => {
+          return response.data.data;
+        })
+        .catch((error) => {
+          throw {
+            error: error,
+            data: error.response.data,
+            message: "Error while getting logistic from third party",
+          };
+        });
+
+      // filtered logistic according to active logistic from merchant
+      const filteredLogistic = await logisticResponse
+        .map((e) => {
+          return (
+            merchantActiveLogistic.some((mal) => mal.shippingRateId == e.id) && //checking if merchant active logistic contain the same rate type id adn return it
+            e
+          );
+        })
+        .filter((el) => el); //remove falsy value from array
+
+      //   [
+      //     {
+      //         "logistic": {
+      //             "id": 3,
+      //             "name": "RPX",
+      //             "logo_url": "https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png",
+      //             "code": "RPX"
+      //         },
+      //         "id": 9,
+      //         "name": "ERP",
+      //         "type_name": "",
+      //         "volumetric": 6000,
+      //         "min_kg": 0,
+      //         "max_kg": 100
+      //     },
+      //     {
+      //         "logistic": {
+      //             "id": 3,
+      //             "name": "RPX",
+      //             "logo_url": "https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png",
+      //             "code": "RPX"
+      //         },
+      //         "id": 11,
+      //         "name": "NDP",
+      //         "type_name": "Express",
+      //         "volumetric": 6000,
+      //         "min_kg": 0,
+      //         "max_kg": 100
+      //     },
+      //     {
+      //         "logistic": {
+      //             "id": 3,
+      //             "name": "RPX",
+      //             "logo_url": "https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png",
+      //             "code": "RPX"
+      //         },
+      //         "id": 567,
+      //         "name": "PSS",
+      //         "type_name": "Same Day",
+      //         "volumetric": 6000,
+      //         "min_kg": 0,
+      //         "max_kg": 3
+      //     },
+      //     {
+      //         "logistic": {
+      //             "id": 3,
+      //             "name": "RPX",
+      //             "logo_url": "https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png",
+      //             "code": "RPX"
+      //         },
+      //         "id": 571,
+      //         "name": "PSN",
+      //         "type_name": "Express",
+      //         "volumetric": 6000,
+      //         "min_kg": 0,
+      //         "max_kg": 3
+      //     },
+      //     {
+      //         "logistic": {
+      //             "id": 3,
+      //             "name": "RPX",
+      //             "logo_url": "https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png",
+      //             "code": "RPX"
+      //         },
+      //         "id": 572,
+      //         "name": "PSR",
+      //         "type_name": "Regular",
+      //         "volumetric": 6000,
+      //         "min_kg": 0,
+      //         "max_kg": 100
+      //     },
+      //     {
+      //         "logistic": {
+      //             "id": 33,
+      //             "name": "SAP",
+      //             "logo_url": "https://global-cdn.shipper.id/images/png/logistic/sap-express.240x90.png",
+      //             "code": "SAP"
+      //         },
+      //         "id": 349,
+      //         "name": "Reguler",
+      //         "type_name": "Regular",
+      //         "volumetric": 6000,
+      //         "min_kg": 0,
+      //         "max_kg": 30
+      //     },
+      //     {
+      //         "logistic": {
+      //             "id": 33,
+      //             "name": "SAP",
+      //             "logo_url": "https://global-cdn.shipper.id/images/png/logistic/sap-express.240x90.png",
+      //             "code": "SAP"
+      //         },
+      //         "id": 350,
+      //         "name": "One Day Service",
+      //         "type_name": "Express",
+      //         "volumetric": 6000,
+      //         "min_kg": 1,
+      //         "max_kg": 30
+      //     }
+      // ]
+
+      return res.json(filteredLogistic);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+  static async addActiveLogisticMerchant(req, res) {
+    try {
+      const { ownerId, logistics } = req.body;
+
+      // payload for post, needed ownerId, and logistics (stringify) for list of logistic items that want to add
+      //   {
+      //     "ownerId":"6138f0839da119f74b3d6834",
+      //     "logistics": "[{\"logistic\":{\"id\":3,\"name\":\"RPX\",\"logo_url\":\"https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png\",\"code\":\"RPX\"},\"id\":9,\"name\":\"ERP\",\"type_name\":\"\",\"volumetric\":6000,\"min_kg\":0,\"max_kg\":100},{\"logistic\":{\"id\":3,\"name\":\"RPX\",\"logo_url\":\"https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png\",\"code\":\"RPX\"},\"id\":11,\"name\":\"NDP\",\"type_name\":\"Express\",\"volumetric\":6000,\"min_kg\":0,\"max_kg\":100},{\"logistic\":{\"id\":3,\"name\":\"RPX\",\"logo_url\":\"https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png\",\"code\":\"RPX\"},\"id\":567,\"name\":\"PSS\",\"type_name\":\"Same Day\",\"volumetric\":6000,\"min_kg\":0,\"max_kg\":3},{\"logistic\":{\"id\":3,\"name\":\"RPX\",\"logo_url\":\"https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png\",\"code\":\"RPX\"},\"id\":571,\"name\":\"PSN\",\"type_name\":\"Express\",\"volumetric\":6000,\"min_kg\":0,\"max_kg\":3},{\"logistic\":{\"id\":3,\"name\":\"RPX\",\"logo_url\":\"https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png\",\"code\":\"RPX\"},\"id\":572,\"name\":\"PSR\",\"type_name\":\"Regular\",\"volumetric\":6000,\"min_kg\":0,\"max_kg\":100},{\"logistic\":{\"id\":33,\"name\":\"SAP\",\"logo_url\":\"https://global-cdn.shipper.id/images/png/logistic/sap-express.240x90.png\",\"code\":\"SAP\"},\"id\":349,\"name\":\"Reguler\",\"type_name\":\"Regular\",\"volumetric\":6000,\"min_kg\":0,\"max_kg\":30},{\"logistic\":{\"id\":33,\"name\":\"SAP\",\"logo_url\":\"https://global-cdn.shipper.id/images/png/logistic/sap-express.240x90.png\",\"code\":\"SAP\"},\"id\":350,\"name\":\"One Day Service\",\"type_name\":\"Express\",\"volumetric\":6000,\"min_kg\":1,\"max_kg\":30}]"
+      // }
+
+      //parse stringify to json again
+      const parseLogistic = JSON.parse(logistics);
+
+      //map list parsed logistic to schema shipment
+      const mappedParsedLogistic = await parseLogistic.map((e) => {
+        return {
+          owner: ownerId,
+          isAvailable: true,
+          shippingId: e.logistic.id,
+          shippingRateId: e.id,
+          shippingName: e.logistic.name,
+          shippingRateName: e.name,
+          shippingType: e.type_name,
+          shippingImageUrl: e.logistic.logo_url,
+        };
+      });
+
+      //insert many all parsed logistic
+      const insertedLogistic = await MerchantShipment.insertMany(
+        mappedParsedLogistic
+      )
+        .then((docs) => {
+          // saved response from mongodb
+
+          //   [
+          //     {
+          //         "owner": "6138f0839da119f74b3d6834",
+          //         "_id": "6138f3e185e0cc7d35562ca8",
+          //         "isAvailable": true,
+          //         "shippingId": "3",
+          //         "shippingRateId": "9",
+          //         "shippingName": "RPX",
+          //         "shippingType": "",
+          //         "shippingImageUrl": "https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png",
+          //         "__t": "MerchantShipment",
+          //         "__v": 0
+          //     },
+          //     {
+          //         "owner": "6138f0839da119f74b3d6834",
+          //         "_id": "6138f3e185e0cc7d35562ca9",
+          //         "isAvailable": true,
+          //         "shippingId": "3",
+          //         "shippingRateId": "11",
+          //         "shippingName": "RPX",
+          //         "shippingType": "Express",
+          //         "shippingImageUrl": "https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png",
+          //         "__t": "MerchantShipment",
+          //         "__v": 0
+          //     },
+          //     {
+          //         "owner": "6138f0839da119f74b3d6834",
+          //         "_id": "6138f3e185e0cc7d35562caa",
+          //         "isAvailable": true,
+          //         "shippingId": "3",
+          //         "shippingRateId": "567",
+          //         "shippingName": "RPX",
+          //         "shippingType": "Same Day",
+          //         "shippingImageUrl": "https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png",
+          //         "__t": "MerchantShipment",
+          //         "__v": 0
+          //     },
+          //     {
+          //         "owner": "6138f0839da119f74b3d6834",
+          //         "_id": "6138f3e185e0cc7d35562cab",
+          //         "isAvailable": true,
+          //         "shippingId": "3",
+          //         "shippingRateId": "571",
+          //         "shippingName": "RPX",
+          //         "shippingType": "Express",
+          //         "shippingImageUrl": "https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png",
+          //         "__t": "MerchantShipment",
+          //         "__v": 0
+          //     },
+          //     {
+          //         "owner": "6138f0839da119f74b3d6834",
+          //         "_id": "6138f3e185e0cc7d35562cac",
+          //         "isAvailable": true,
+          //         "shippingId": "3",
+          //         "shippingRateId": "572",
+          //         "shippingName": "RPX",
+          //         "shippingType": "Regular",
+          //         "shippingImageUrl": "https://global-cdn.shipper.id/images/png/logistic/rpx.240x90.png",
+          //         "__t": "MerchantShipment",
+          //         "__v": 0
+          //     },
+          //     {
+          //         "owner": "6138f0839da119f74b3d6834",
+          //         "_id": "6138f3e185e0cc7d35562cad",
+          //         "isAvailable": true,
+          //         "shippingId": "33",
+          //         "shippingRateId": "349",
+          //         "shippingName": "SAP",
+          //         "shippingType": "Regular",
+          //         "shippingImageUrl": "https://global-cdn.shipper.id/images/png/logistic/sap-express.240x90.png",
+          //         "__t": "MerchantShipment",
+          //         "__v": 0
+          //     },
+          //     {
+          //         "owner": "6138f0839da119f74b3d6834",
+          //         "_id": "6138f3e185e0cc7d35562cae",
+          //         "isAvailable": true,
+          //         "shippingId": "33",
+          //         "shippingRateId": "350",
+          //         "shippingName": "SAP",
+          //         "shippingType": "Express",
+          //         "shippingImageUrl": "https://global-cdn.shipper.id/images/png/logistic/sap-express.240x90.png",
+          //         "__t": "MerchantShipment",
+          //         "__v": 0
+          //     }
+          // ]
+
+          return docs;
+        })
+        .catch((err) => {
+          throw {
+            error: err,
+            message: "Error while insert many logistics for merchant",
+          };
+        });
+
+      return res.json(insertedLogistic);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+  static async removeActiveLogistic(req, res) {
+    try {
+      const { rateIdType, ownerId } = req.body;
+
+      //   {
+      //     "rateIdType":"350",
+      //     "ownerId":"6138f0839da119f74b3d6834"
+      // }
+
+      await MerchantShipment.deleteOne({
+        shippingRateId: rateIdType,
+        ownerId: ownerId,
+      })
+        .then((response) => {
+          return res.json("Deleted");
+        })
+        .catch((error) => {
+          throw { message: "Error while deleting shipment", error };
+        });
     } catch (error) {
       return res.status(500).json(error);
     }

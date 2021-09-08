@@ -3,6 +3,13 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 require("dotenv").config();
 
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb://localhost/shipping", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
 const app = express();
 
 app.use(bodyParser.json());

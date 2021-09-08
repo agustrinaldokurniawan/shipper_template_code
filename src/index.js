@@ -22,12 +22,16 @@ const pricingRoute = require("./routes/pricing");
 const orderRoute = require("./routes/order");
 const pickupRoute = require("./routes/pickup");
 const logisticRoute = require("./routes/logistic");
+const merchantRoute = require("./routes/merchant");
+const shipmentRoute = require("./routes/shipment");
 
 app.use("/location", locationRoute);
 app.use("/pricing", pricingRoute);
 app.use("/order", orderRoute);
 app.use("/pickup", pickupRoute);
 app.use("/logistic", logisticRoute);
+app.use("/merchant", merchantRoute);
+app.use("/shipment", shipmentRoute);
 
 const server = () =>
   app.listen(4000, () => {

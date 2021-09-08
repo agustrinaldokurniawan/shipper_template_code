@@ -5,39 +5,48 @@ const options = { discriminatorKey: "addressType" };
 
 const addressSchema = new Schema(
   {
-    country: { //Indonesia
+    country: {
+      //Indonesia
       type: String,
       default: "",
     },
-    city: { //Jakarta
+    city: {
+      //Jakarta
       type: String,
       default: "",
     },
-    province: { //DKI Jakarta
+    province: {
+      //DKI Jakarta
       type: String,
       default: "",
     },
-    district: { // Tanah Abang
+    district: {
+      // Tanah Abang
       type: String,
       default: "",
     },
-    subDistrict: { //Karet
+    subDistrict: {
+      //Karet
       type: String,
       default: "",
     },
-    postalcode: { //11020
+    postalcode: {
+      //11020
       type: String,
       default: "",
     },
-    addressDetail: { // Jalan Sahid Sudirman
-      type: String,
-      default: ''
-    },
-    fullAddress: { // `${addressDetail}, ${district}/${subDistrict}, ${province}, ${city}, ${postalCode}`
+    addressDetail: {
+      // Jalan Sahid Sudirman
       type: String,
       default: "",
     },
-    addressName: { //cth Rumah mas Yoko
+    fullAddress: {
+      // `${addressDetail}, ${district}/${subDistrict}, ${province}, ${city}, ${postalCode}`
+      type: String,
+      default: "",
+    },
+    addressName: {
+      //cth Rumah mas Yoko
       type: String,
       default: "",
     },

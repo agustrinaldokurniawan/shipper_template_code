@@ -24,16 +24,16 @@ class LocationController {
         };
       }
 
-        const url = `${baseURL}/v3/location?keyword=${keyword}`;
+      const url = `${baseURL}/v3/location?keyword=${keyword}`;
 
-        const locationResponse = await axios
-          .get(url, {
-            headers: {
-              Accept: "application/json",
-               "X-API-KEY": ShipperKey
-            },
-          })
-          .then((response) => {
+      const locationResponse = await axios
+        .get(url, {
+          headers: {
+            Accept: "application/json",
+            "X-API-KEY": ShipperKey,
+          },
+        })
+        .then((response) => {
           //   {
           //     "metadata": {
           //         "path": "/v3/location?adm_level=5&keyword=menteng+atas",
@@ -112,16 +112,15 @@ class LocationController {
           //     }
           // }
 
-
-            return response.data
-          })
-          .catch((error) => {
-            console.log({ error });
-            throw {
-              error: error,
-              message: "Error while getting location",
-            };
-          });
+          return response.data;
+        })
+        .catch((error) => {
+          console.log({ error });
+          throw {
+            error: error,
+            message: "Error while getting location",
+          };
+        });
 
       // This is dummy response object
       // const locationResponse = await location;
@@ -140,17 +139,18 @@ class LocationController {
       // limit =	integer =	Limit data for each page, integer example:30 (default: 30)
       // page = integer =	Page Number integer example: 1 (default: 1)
 
-        const url = `${baseURL}/v3/location/countries?country_id=${
-          country_id}&limit=${limit}&page=${page}`;
+      const url = `${baseURL}/v3/location/countries?country_id=${
+        country_id || 228
+      }&limit=${limit || 30}&page=${page || 1}`;
 
-        const locationResponse = await axios
-          .get(url, {
-            headers: {
-              Accept: "application/json",
-              "X-API-KEY": ShipperKey
-            },
-          })
-          .then((response) => {
+      const locationResponse = await axios
+        .get(url, {
+          headers: {
+            Accept: "application/json",
+            "X-API-KEY": ShipperKey,
+          },
+        })
+        .then((response) => {
           //   {
           //     "metadata": {
           //         "path": "/v3/location/countries?country_id=228&limit=5&page=1",
@@ -173,16 +173,16 @@ class LocationController {
           //     }
           // }
 
-
-            return response.data;
-          })
-          .catch((error) => {
-            console.log({ error });
-            throw {
-              error: error,
-              message: "Error while getting location",
-            };
-          });
+          return response.data;
+        })
+        .catch((error) => {
+          console.log({ error });
+          throw {
+            error: error,
+            data: error.response.data,
+            message: "Error while getting location",
+          };
+        });
 
       // This is dummy response object
       // const locationResponse = await locationCountry;
@@ -212,16 +212,18 @@ class LocationController {
 
       //   province_id	integer	Shipper’s Province ID integer example: 6 (default: show all)
 
-        const url = `${baseURL}/v3/location/country/${country_id}/provinces?limit=${limit}&page=${page}`;
+      const url = `${baseURL}/v3/location/country/${country_id}/provinces?limit=${
+        limit || 30
+      }&page=${page || 1}`;
 
-        const locationResponse = await axios
-          .get(url, {
-            headers: {
-              Accept: "application/json",
-              "X-API-KEY": ShipperKey
-            },
-          })
-          .then((response) => {
+      const locationResponse = await axios
+        .get(url, {
+          headers: {
+            Accept: "application/json",
+            "X-API-KEY": ShipperKey,
+          },
+        })
+        .then((response) => {
           //   {
           //     "metadata": {
           //         "path": "/v3/location/country/228/provinces?%3Acountry_id=228&limit=2&page=1",
@@ -261,16 +263,15 @@ class LocationController {
           //     }
           // }
 
-
-            return response.data;
-          })
-          .catch((error) => {
-            console.log({ error });
-            throw {
-              error: error,
-              message: "Error while getting location",
-            };
-          });
+          return response.data;
+        })
+        .catch((error) => {
+          console.log({ error });
+          throw {
+            error: error,
+            message: "Error while getting location",
+          };
+        });
 
       // This is dummy response object
       // const locationResponse = await locationProvince;
@@ -298,16 +299,18 @@ class LocationController {
       //   limit	integer	Limit data for each page, integer example: 30 (default: 30)
       //   page	integer	Page Number integer example: 1 (default: 1)
 
-        const url = `${baseURL}/v3/location/province/${province_id}/cities?limit=${limit}&page=${page}`;
+      const url = `${baseURL}/v3/location/province/${province_id}/cities?limit=${
+        limit || 30
+      }&page=${page || 1}`;
 
-        const locationResponse = await axios
-          .get(url, {
-            headers: {
-              Accept: "application/json",
-              "X-API-KEY": ShipperKey
-            },
-          })
-          .then((response) => {
+      const locationResponse = await axios
+        .get(url, {
+          headers: {
+            Accept: "application/json",
+            "X-API-KEY": ShipperKey,
+          },
+        })
+        .then((response) => {
           //   {
           //     "metadata": {
           //         "path": "/v3/location/province/6/cities?%3Aprovince_id=6&limit=2&page=1",
@@ -359,16 +362,15 @@ class LocationController {
           //     }
           // }
 
-
-            return response.data;
-          })
-          .catch((error) => {
-            console.log({ error });
-            throw {
-              error: error,
-              message: "Error while getting location",
-            };
-          });
+          return response.data;
+        })
+        .catch((error) => {
+          console.log({ error });
+          throw {
+            error: error,
+            message: "Error while getting location",
+          };
+        });
 
       // This is dummy response object
       // const locationResponse = await locationCity;
@@ -394,16 +396,18 @@ class LocationController {
       //   limit	integer	Limit data for each page, integer example: 30 (default: 30)
       //   page	integer	Page Number integer example: 1 (default: 1)
 
-        const url = `${baseURL}/v3/location/city/${city_id}/suburbs?limit=${limit}&page=${page}`;
+      const url = `${baseURL}/v3/location/city/${city_id}/suburbs?limit=${
+        limit || 30
+      }&page=${page || 1}`;
 
-        const locationResponse = await axios
-          .get(url, {
-            headers: {
-              Accept: "application/json",
-              "X-API-KEY": ShipperKey
-            },
-          })
-          .then((response) => {
+      const locationResponse = await axios
+        .get(url, {
+          headers: {
+            Accept: "application/json",
+            "X-API-KEY": ShipperKey,
+          },
+        })
+        .then((response) => {
           //   {
           //     "metadata": {
           //         "path": "/v3/location/city/6/suburbs?%3Acity_id=6&limit=2&page=1",
@@ -467,16 +471,63 @@ class LocationController {
           //     }
           // }
 
+          return response.data;
+        })
+        .catch((error) => {
+          console.log({ error });
+          throw {
+            error: error,
+            data: error.response.data,
+            message: "Error while getting location",
+          };
+        });
 
-            return response.data;
-          })
-          .catch((error) => {
-            console.log({ error });
-            throw {
-              error: error,
-              message: "Error while getting location",
-            };
-          });
+      // This is dummy response object
+      // const locationResponse = await locationSuburbs;
+
+      return res.json(locationResponse);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+
+  static async getAreas(req, res) {
+    try {
+      const { suburb_id, limit, page } = await req.query;
+
+      if (!suburb_id) {
+        throw {
+          message: "Suburb ID must be provided",
+        };
+      }
+
+      //   city_id required	integer	Shipper’s City ID integer example: 41
+      //   suburb_ids	string	Array of Shipper’s Suburb ID as a string w/o square brackets, example: 482,483,484 (default: show all)
+      //   limit	integer	Limit data for each page, integer example: 30 (default: 30)
+      //   page	integer	Page Number integer example: 1 (default: 1)
+
+      const url = `${baseURL}/v3/location/suburb/${suburb_id}/areas?limit=${
+        limit || 30
+      }&page=${page || 1}`;
+
+      const locationResponse = await axios
+        .get(url, {
+          headers: {
+            Accept: "application/json",
+            "X-API-KEY": ShipperKey,
+          },
+        })
+        .then((response) => {
+          return response.data;
+        })
+        .catch((error) => {
+          console.log({ error });
+          throw {
+            error: error,
+            data: error.response.data,
+            message: "Error while getting location",
+          };
+        });
 
       // This is dummy response object
       // const locationResponse = await locationSuburbs;

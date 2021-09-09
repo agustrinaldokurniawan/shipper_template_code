@@ -493,7 +493,7 @@ class LocationController {
 
   static async getAreas(req, res) {
     try {
-      const { suburb_id, limit, page } = await req.query;
+      const { suburb_id, limit, page, area_ids } = await req.query;
 
       if (!suburb_id) {
         throw {

@@ -24,6 +24,7 @@ const pickupRoute = require("./routes/pickup");
 const logisticRoute = require("./routes/logistic");
 const merchantRoute = require("./routes/merchant");
 const shipmentRoute = require("./routes/shipment");
+const addressRoute = require("./routes/address");
 
 app.use("/location", locationRoute);
 app.use("/pricing", pricingRoute);
@@ -32,6 +33,7 @@ app.use("/pickup", pickupRoute);
 app.use("/logistic", logisticRoute);
 app.use("/merchant", merchantRoute);
 app.use("/shipment", shipmentRoute);
+app.use("/address", addressRoute);
 
 const server = () =>
   app.listen(4000, () => {

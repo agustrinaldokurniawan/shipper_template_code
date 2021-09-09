@@ -1,6 +1,7 @@
 const axios = require("axios").default;
 const baseURL = "https://merchant-api-sandbox.shipper.id";
-const ShipperKey = "EpHZs1U77o0p7dXPX0DKO34MYEYodcD5BPaDxyk51PNhk0vCLx2sjXzCDtfDoPNp";
+const ShipperKey =
+  "EpHZs1U77o0p7dXPX0DKO34MYEYodcD5BPaDxyk51PNhk0vCLx2sjXzCDtfDoPNp";
 
 const { domestic, domesticRateType } = require("../dummy/pricing");
 
@@ -57,25 +58,28 @@ class PricingController {
         sort_by,
       };
 
-        const pricingResponse = await axios
-          .post(url,
-           {...pricingPayload},
-           {
+      const pricingResponse = await axios
+        .post(
+          url,
+          { ...pricingPayload },
+          {
             headers: {
               "Content-Type": "application/json",
-              "X-API-KEY": ShipperKey
+              "X-API-KEY": ShipperKey,
             },
-          })
-          .then((response) => {
-            return response.data;
-          })
-          .catch((error) => {
-            console.log({ error });
-            throw {
-              error: error,
-              message: "Error while getting pricing",
-            };
-          });
+          }
+        )
+        .then((response) => {
+          return response.data;
+        })
+        .catch((error) => {
+          console.log({ error });
+          throw {
+            error: error,
+            data: error.response.data,
+            message: "Error while getting pricing",
+          };
+        });
 
       // This is dummy response object
       // const pricingResponse = await domestic;
@@ -142,25 +146,27 @@ class PricingController {
         sort_by,
       };
 
-        const pricingResponse = await axios
-          .post(url,
-           {...pricingPayload},
-           {
+      const pricingResponse = await axios
+        .post(
+          url,
+          { ...pricingPayload },
+          {
             headers: {
               "Content-Type": "application/json",
-              "X-API-KEY": ShipperKey
+              "X-API-KEY": ShipperKey,
             },
-          })
-          .then((response) => {
-            return response.data;
-          })
-          .catch((error) => {
-            console.log({ error });
-            throw {
-              error: error,
-              message: "Error while getting pricing",
-            };
-          });
+          }
+        )
+        .then((response) => {
+          return response.data;
+        })
+        .catch((error) => {
+          console.log({ error });
+          throw {
+            error: error,
+            message: "Error while getting pricing",
+          };
+        });
 
       // This is dummy response object
 
@@ -175,8 +181,6 @@ class PricingController {
   static async totalPrice(req, res) {
     try {
       const { userId, CartId, addressId } = req.body;
-
-      
     } catch (error) {
       return res.status(500).json(error);
     }

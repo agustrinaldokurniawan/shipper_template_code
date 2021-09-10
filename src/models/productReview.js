@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const productReviewSchema = new mongoose.Schema({
   productId: {
     type: mongoose.Types.ObjectId,
-    ref: "RetailProduct",
+    ref: "Product",
   },
   userId: {
     type: mongoose.Types.ObjectId,
@@ -20,6 +20,7 @@ const productReviewSchema = new mongoose.Schema({
   isAnonymous: {
     type: Boolean,
     required: true,
+    default: false,
   },
   reviewImageURL: [
     {
@@ -41,4 +42,5 @@ productReviewSchema.pre("save", async function (next) {
 const ProductReview =
   mongoose.models.ProductReview ||
   mongoose.model("ProductReview", productReviewSchema);
-export default ProductReview;
+
+module.exports = ProductReview;

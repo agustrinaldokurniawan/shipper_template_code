@@ -60,18 +60,18 @@ const productSchema = new Schema({
   productCategories: {
     parentCategory: {
       // type: String,
-      type: 'ObjectId',
-      ref: 'ParentCategory'
+      type: "ObjectId",
+      ref: "ParentCategory",
     },
     mainCategory: {
       // type: String,
-      type: 'ObjectId',
-      ref: 'MainCategory'
+      type: "ObjectId",
+      ref: "MainCategory",
     },
     subCategory: {
       // type: String,
-      type: 'ObjectId',
-      ref: 'SubCategory'
+      type: "ObjectId",
+      ref: "SubCategory",
     },
     completeCategory: {
       type: String,
@@ -229,7 +229,7 @@ const productSchema = new Schema({
   review: [
     {
       type: "ObjectId",
-      ref: "Review",
+      ref: "ProductReview",
     },
   ],
 });

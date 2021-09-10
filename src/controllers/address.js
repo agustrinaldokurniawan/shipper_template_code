@@ -80,7 +80,7 @@ class AddressController {
         lng,
         postalcode: postcode,
         addressDetail,
-        fullAddress: `${addressDetail}, ${suburb.name}/${name}, ${province.name}, ${city.name}, ${postcode}`,
+        fullAddress: `${addressDetail}, ${suburb.name}/${name}, ${city.name}, ${province.name}, ${postcode}`,
         addressName,
       });
 

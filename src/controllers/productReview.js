@@ -66,11 +66,10 @@ class ProductReviewController {
   }
   static async getOne(req, res) {
     try {
-      const id = req.params.id;
+      const { params } = await req;
 
-      const getReview = await ProductReview.findById(id)
-        .populate("productId")
-        .populate("userId")
+      const getReview = await ProductReview.findById(params.id)
+        .lean()
         .catch((error) => {
           throw { error, message: "Error while getting review" };
         });
@@ -210,99 +209,49 @@ class ProductReviewController {
 
   static async getProductWithReview(req, res) {
     try {
-      const { productId, skip, limit } = await req.query;
+      const { query } = await req;
 
-      const product = await Product.findById(productId)
-        .populate({
-          path: "review",
-          options: {
-            limit: limit,
-            skip: skip,
-            sort: { reviewDate: -1 },
+      const productIds = await query.productId.split(",").map((e) => {
+        return mongoose.Types.ObjectId(e);
+      });
+
+      const product = await Product.aggregate([
+        {
+          $match: {
+            _id: { $in: productIds },
           },
-        })
-        .catch((error) => {
-          console.log(error);
-          throw {
-            error,
-            message: "Error while fetching product with review",
-          };
-        });
-
-      // {
-      //     "productCoreInfo": {
-      //         "productName": "Buah nanas",
-      //         "productUrl": "",
-      //         "productBrand": "",
-      //         "productVideoUrl": ""
-      //     },
-      //     "productDetail": {
-      //         "productWeight": 0,
-      //         "availableStock": 1,
-      //         "minimumOrder": 1
-      //     },
-      //     "productWholeSalePrice": {
-      //         "isHaveWholeSalePrice": false,
-      //         "minimumQuantity": 1,
-      //         "wholeSalePrice": 1
-      //     },
-      //     "productDiscount": {
-      //         "isDiscount": false
-      //     },
-      //     "preOrderInfo": {
-      //         "isPreorderProduct": false
-      //     },
-      //     "performance": {
-      //         "productVisited": 0,
-      //         "productReviewCount": 0,
-      //         "productTotalSold": 0
-      //     },
-      //     "_id": "613b0b5ea4a128b808b28338",
-      //     "ownerId": "613afef5fa00457d289a86cf",
-      //     "mustUsingShipmentInsurance": false,
-      //     "productImage": [],
-      //     "productVarian": [],
-      //     "availableShipping": [],
-      //     "availableCampaign": [],
-      //     "koziiCampaign": [],
-      //     "availableShipment": [],
-      //     "review": [
-      //         {
-      //             "_id": "613b158f52428993aa5b6481",
-      //             "productId": "613b0b5ea4a128b808b28338",
-      //             "userId": "613afe59fa00457d289a86cd",
-      //             "message": "Mantul",
-      //             "reviewDate": "2021-09-10T08:21:08.316Z",
-      //             "isAnonymous": false,
-      //             "reviewImageURL": [],
-      //             "rating": 5,
-      //             "__v": 0
-      //         },
-      //         {
-      //             "_id": "613b15ce52428993aa5b6485",
-      //             "productId": "613b0b5ea4a128b808b28338",
-      //             "userId": "613afe59fa00457d289a86cd",
-      //             "message": "Mantul",
-      //             "reviewDate": "2021-09-10T08:21:08.316Z",
-      //             "isAnonymous": false,
-      //             "reviewImageURL": [],
-      //             "rating": 3,
-      //             "__v": 0
-      //         },
-      //         {
-      //             "_id": "613b15d052428993aa5b6489",
-      //             "productId": "613b0b5ea4a128b808b28338",
-      //             "userId": "613afe59fa00457d289a86cd",
-      //             "message": "Mantul",
-      //             "reviewDate": "2021-09-10T08:21:08.316Z",
-      //             "isAnonymous": false,
-      //             "reviewImageURL": [],
-      //             "rating": 2,
-      //             "__v": 0
-      //         }
-      //     ],
-      //     "__v": 7
-      // }
+        },
+        {
+          $lookup: {
+            from: "productreviews",
+            let: { idReview: "$review" },
+            pipeline: [
+              { $match: { $expr: { $in: ["$_id", "$$idReview"] } } },
+              { $skip: Number(query.skip) },
+              { $limit: Number(query.limit) },
+            ],
+            as: "review",
+          },
+        },
+        {
+          $project: {
+            _id: "$_id",
+            productCoreInfo: 1,
+            review: 1,
+          },
+        },
+        // {
+        //   $lookup: {
+        //     from: "ProductReview",
+        //     localField: "review",
+        //     foreignField: "_id",
+        //     as: "reviews",
+        //   },
+        // },
+      ]).catch((error) => {
+        console.log(error);
+        throw { error };
+      });
 
       return res.json(product);
     } catch (error) {

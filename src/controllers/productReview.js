@@ -240,14 +240,6 @@ class ProductReviewController {
             review: 1,
           },
         },
-        // {
-        //   $lookup: {
-        //     from: "ProductReview",
-        //     localField: "review",
-        //     foreignField: "_id",
-        //     as: "reviews",
-        //   },
-        // },
       ]).catch((error) => {
         console.log(error);
         throw { error };

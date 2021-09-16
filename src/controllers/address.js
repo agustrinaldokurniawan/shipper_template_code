@@ -3,124 +3,128 @@ const baseURL = "https://merchant-api-sandbox.shipper.id";
 const ShipperKey = process.env.SHIPPER_KEY;
 
 const MerchantAddress = require("../models/merchantAddress");
+const Merchant = require("../models/merchant");
 
 class AddressController {
-  static async addMerchantAddress(req, res) {
+  static async AddMerchantAddress(req, res) {
     try {
-      const {
-        suburb_id,
-        area_ids,
-        limit,
-        page,
-        lng,
-        lat,
-        ownerId,
-        addressDetail,
-        addressName,
-      } = req.body;
+      const { params, body } = req;
+      const merchantExist = await Merchant.exists({ _id: params.merchantId });
+      if (!merchantExist) throw new Error("Merchant Does Not Exist");
+      const merchantData = await Merchant.findOne({ _id: params.merchantId })
+        .select("merchantAddress")
+        .exec();
 
-      //   {
-      //     "suburb_id":482,
-      //     "area_ids":4707,
-      //     "ownerId":"6139cdfdae481efa1f6ed463",
-      //     "lng":"-6.9387843",
-      //     "lat":"109.89743843",
-      //     "addressDetail":"Jalan patimura rt 10 rw 9 nomor 20d",
-      //     "addressName":"Rumah Antoni"
-      // }
-
-      const url = `${baseURL}/v3/location/suburb/${suburb_id}/areas?limit=${
-        limit || 30
-      }&page=${page || 1}&area_ids=${area_ids}`;
-
-      const locationResponse = await axios
-        .get(url, {
-          headers: {
-            Accept: "application/json",
-            "X-API-KEY": ShipperKey,
-          },
-        })
-        .then((response) => {
-          return response.data.data[0];
-        })
-        .catch((err) => {
-          throw {
-            error: err,
-            data: err.response.data,
-            message: "Error while getting location",
-          };
-        });
-
-      const { suburb, city, province, country, id, name, postcode } =
-        locationResponse;
-
-      const newAddressMerchant = new MerchantAddress({
-        owner: ownerId,
+      const addressQuery = {
         country: {
-          id: country.id,
-          name: country.name,
-        },
-        province: {
-          id: province.id,
-          name: province.name,
+          id: "",
+          name: "",
         },
         city: {
-          id: city.id,
-          name: city.name,
+          id: "",
+          name: "",
+        },
+        province: {
+          id: "",
+          name: "",
         },
         district: {
-          id: suburb.id,
-          name: suburb.name,
+          id: "",
+          name: "",
         },
         subDistrict: {
-          id: id,
-          name: name,
+          id: "",
+          name: "",
         },
-        lat,
-        lng,
-        postalcode: postcode,
-        addressDetail,
-        fullAddress: `${addressDetail}, ${suburb.name}/${name}, ${city.name}, ${province.name}, ${postcode}`,
-        addressName,
+        lat: "",
+        lng: "",
+        postalCode: "",
+        addressDetail: "",
+        fullAddress: "",
+        addressName: "",
+        longitude: "",
+        latitude: "",
+        merchantId: merchantData._id,
+        senderName: "",
+      };
+      addressQuery.country.name = "Indonesia";
+      addressQuery.country.id = 228;
+      if (body.city) addressQuery.city.name = body.city;
+      if (body.cityId) addressQuery.city.id = body.cityId;
+      if (body.province) addressQuery.province.name = body.province;
+      if (body.provinceId) addressQuery.province.id = body.provinceId;
+      if (body.district) addressQuery.district.name = body.district;
+      if (body.districtId) addressQuery.district.id = body.districtId;
+      if (body.subDistrict) addressQuery.subDistrict.name = body.subDistrict;
+      if (body.subDistrictId) addressQuery.subDistrict.id = body.subDistrictId;
+      if (body.postalCode) addressQuery.postalCode = body.postalCode;
+      if (body.addressDetail) addressQuery.addressDetail = body.addressDetail;
+      if (body.addressName) addressQuery.addressName = body.addressName;
+      if (body.longitude) addressQuery.longitude = body.longitude;
+      if (body.latitude) addressQuery.latitude = body.latitude;
+      if (body.senderName) addressQuery.senderName = body.senderName;
+      if (body.lat) addressQuery.lat = body.lat;
+      if (body.lng) addressQuery.lng = body.lng;
+      addressQuery.fullAddress = `${addressQuery.addressDetail}, ${addressQuery.district.name}/${addressQuery.subDistrict.name}, ${addressQuery.province.name}, ${addressQuery.city.name}, ${addressQuery.postalCode}`;
+
+      const dummyPayload = {
+        cod: false,
+        origin: {
+          area_id: Number(body.subDistrictId),
+          lat: String(body.lat),
+          lng: String(body.lng),
+          suburb_id: Number(body.districtId),
+        },
+        destination: {
+          area_id: Number(body.subDistrictId),
+          lat: String(body.lat),
+          lng: String(body.lng),
+          suburb_id: Number(body.districtId),
+        },
+        height: 30,
+        weight: 1,
+        width: 30,
+        length: 30,
+        item_value: 200000,
+        limit: 10,
+        page: 1,
+        sort_by: ["final_price"],
+      };
+
+      //check coverage by checking pricing from shipper
+      await axios({
+        method: "POST",
+        url: `${baseURL}/v3/pricing/domestic`,
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-Key": ShipperKey,
+        },
+        data: dummyPayload,
+      }).catch((error) => {
+        if (error.response.data.metadata.errors[0].code === 31006) {
+          //   {
+          //     "message": "Add Merchant Address Failed",
+          //     "error": "Your area is not supported by shipment"
+          // }
+
+          throw new Error("Your area is not supported by shipment");
+        }
+        throw new Error("Something wrong while checking coverage");
       });
 
-      //   {
-      //     "owner": "6139cdfdae481efa1f6ed463",
-      //     "_id": "6139cea55b51e63726aafa89",
-      //     "country": {
-      //         "id": 228,
-      //         "name": "INDONESIA"
-      //     },
-      //     "city": {
-      //         "id": 41,
-      //         "name": "Jakarta Selatan"
-      //     },
-      //     "province": {
-      //         "id": 6,
-      //         "name": "DKI Jakarta"
-      //     },
-      //     "district": {
-      //         "id": 482,
-      //         "name": "Setia Budi"
-      //     },
-      //     "subDistrict": {
-      //         "id": 4707,
-      //         "name": "Pasar Manggis"
-      //     },
-      //     "lat": "109.89743843",
-      //     "lng": "-6.9387843",
-      //     "postalcode": "12970",
-      //     "addressDetail": "Jalan patimura rt 10 rw 9 nomor 20d",
-      //     "fullAddress": "Jalan patimura rt 10 rw 9 nomor 20d, Setia Budi/Pasar Manggis, DKI Jakarta, Jakarta Selatan, 12970",
-      //     "addressName": "Rumah Antoni",
-      //     "__t": "MerchantAddress"
-      // }
+      const data = await MerchantAddress.create(addressQuery);
+      merchantData.merchantAddress.push(data._id);
+      await merchantData.save();
 
-      await newAddressMerchant.save();
-
-      return res.json(newAddressMerchant);
+      return res.status(201).json({
+        message: "Add Merchant Address Success",
+        data,
+      });
     } catch (error) {
-      return res.status(500).json(error);
+      return res.status(400).json({
+        message: "Add Merchant Address Failed",
+        error: error.message,
+      });
     }
   }
 }
